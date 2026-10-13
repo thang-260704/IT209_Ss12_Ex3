@@ -1,0 +1,48 @@
+name: CD Multi Environment
+
+on:
+  push:
+    branches: [ "develop", "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://api.staging.example.com
+    steps:
+      - name: Checkout mã nguồn
+        uses: actions/checkout@v5
+
+      - name: Deploy lên Staging (mô phỏng)
+        run: |
+          echo "Môi trường : ${{ github.job }} -> staging"
+          echo "Nhánh      : ${{ github.ref_name }}"
+          echo "Commit     : ${{ github.sha }}"
+          echo "Image      : ghcr.io/thang-260704/it209_ss12_ex2:latest"
+          echo "Deploy staging thành công, không cần phê duyệt."
+
+  deploy-prod:
+    name: Deploy to Production
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://api.prod.example.com
+    steps:
+      - name: Checkout mã nguồn
+        uses: actions/checkout@v5
+
+      - name: Deploy lên Production (mô phỏng)
+        run: |
+          echo "Môi trường : ${{ github.job }} -> production"
+          echo "Nhánh      : ${{ github.ref_name }}"
+          echo "Commit     : ${{ github.sha }}"
+          echo "Người kích hoạt: ${{ github.actor }}"
+          echo "Image      : ghcr.io/thang-260704/it209_ss12_ex2:v1.0.0"
+          echo "Đã được reviewer phê duyệt, deploy production thành công."
